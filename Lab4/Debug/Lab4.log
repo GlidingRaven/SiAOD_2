@@ -1,0 +1,3 @@
+﻿  main.cpp
+D:\git\SiAOD_2\Lab4\main.cpp(195,11): warning C4101: p: неиспользованная локальная переменная
+  Lab4.vcxproj -> D:\git\SiAOD_2\Debug\Lab4.exe
