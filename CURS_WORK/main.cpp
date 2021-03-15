@@ -96,6 +96,20 @@ std::string getcapitals(char *a)
     return out;
 }
 
+std::string getcapitalsreverse(char* a)
+{
+    std::string out = "";
+    for (int i = 0; i <30; i++) //идем слева направо в фио
+    {
+        char d = a[i]; //
+        if (d >= -128 && d <= -97) //если большая буква
+        {
+            out += d;
+        }
+    }
+    //std::cout << out << std::endl;
+    return out;
+}
 
 std::queue<record>* radixb(std::queue<record> *l, int t) // сортировка по b
 { 
@@ -213,6 +227,70 @@ std::queue<record> radixab(std::queue<record> l)
 }
 
 
+std::queue<record> binarysearch(std::queue<record> l, char* query1)
+{
+    char* query = new char[50];
+    CharToOemA(query1, query);
+    record* A = new record[4000];
+    for (int i = 0; i < 3999; i++)
+    {
+        A[i] = l.front();
+        l.pop();
+        //std::cout << getcapitalsreverse(A[i].a) << std::endl;
+    }
+
+    int L = 0;
+    int R = 3999;
+    int m;
+    while (L < R)
+    {
+        m = (L + R) / 2;
+        if (getcapitalsreverse(A[m].a) < query)
+        {
+            L = m + 1;
+        }
+        else
+        {
+            R = m;
+        }
+    }
+    if ((getcapitalsreverse(A[R].a).compare(query)==0))
+    {
+        std::queue<record> newqueue;
+        while (true)
+        {
+            if (R + 1 < 4000) // R = 3998
+            {
+                if (getcapitalsreverse(A[R].a) == getcapitalsreverse(A[R + 1].a))
+                {
+                    newqueue.push(A[R]);
+                    R++;
+                }
+                else
+                {
+                    newqueue.push(A[R]);
+                    break;
+                }
+            }
+            else
+            {
+                newqueue.push(A[R]);
+                break;
+            }
+
+        }
+        return newqueue;
+    }
+    else
+    {
+        std::queue<record> newqueue;
+        return newqueue;
+    }
+
+    
+}
+
+
 int main()
 {
     FILE* fp;
@@ -231,7 +309,12 @@ int main()
     //printlist(myqueue);
     myqueue = radixa(myqueue);
     myqueue = radixab(myqueue);
-    printlist(radixab(myqueue));
+    //printlist(radixab(myqueue));
+
+    std::queue<record> result;
+    char query[5] = "АВА";
+    result = binarysearch(myqueue, query);
+    printlist(result);
 
     
 
