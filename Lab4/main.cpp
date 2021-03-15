@@ -200,7 +200,6 @@ Node* BuildBTree(int A[], int n)
     Root->balance = 0;
     for (i = 1; i < n; i++)
     {
-        //p = Root;
         vr = false;
         hr = false;
         Root = AddToBtree(Root, A[i]);
