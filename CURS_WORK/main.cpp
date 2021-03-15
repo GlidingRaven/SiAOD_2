@@ -9,21 +9,28 @@
 
 struct record
 {
-    char a[30];
-    unsigned short int b;
-    char c[10];
-    char d[22];
+    char author[12];
+    char title[32];
+    char publisher[16];
+    short int year;
+    short int num_of_page;
+
 };
 
 void printlist(std::queue<record> myqueue)
 {
+
     int count=0;
     std::queue<record> temp;
     temp = myqueue;
+    if (myqueue.empty())
+    {
+        std::cout << "Queue is empty" << std::endl;
+    }
     while (!temp.empty())
     {
         count++;
-        std::cout << temp.front().a << " " << temp.front().b << " " << temp.front().c << " " << temp.front().d << std::endl;
+        std::cout << temp.front().author << " " << temp.front().title << " " << temp.front().publisher << " " << temp.front().year << " " << temp.front().num_of_page <<std::endl;
         while (count % 20 == 0)
         {
             std::cout << "Continue? (y/n)" << std::endl;
@@ -72,60 +79,41 @@ int maxdigitb(std::queue <record> myqueue)
     temp = myqueue;
     while (!temp.empty())
     {
-        if (countdigit(temp.front().b) > max)
+        if (countdigit(temp.front().year) > max)
         {
-            max = countdigit(temp.front().b);
+            max = countdigit(temp.front().year);
         }
         temp.pop();
     }
     return max;
 }
 
-std::string getcapitals(char *a)
+std::string firstthree(char *a)
 {
     std::string out = "";
-    for (int i = 29; i >= 0; i--) //идем справа налево в фио
+    for (int i = 0; i < 3; i++) //идем слева направо 3 символа в фио
     {
-        char d = a[i]; //
-        if (d >= -128 && d <= -97) //если большая буква
-        {
-            out += d;
-        }
+        out += a[i];
     }
-    //std::cout << out << std::endl;
+    std::cout << std::endl;
     return out;
 }
 
-std::string getcapitalsreverse(char* a)
-{
-    std::string out = "";
-    for (int i = 0; i <30; i++) //идем слева направо в фио
-    {
-        char d = a[i]; //
-        if (d >= -128 && d <= -97) //если большая буква
-        {
-            out += d;
-        }
-    }
-    //std::cout << out << std::endl;
-    return out;
-}
-
-std::queue<record>* radixb(std::queue<record> *l, int t) // сортировка по b
+std::queue<record>* radixb(std::queue<record> *l) // сортировка по b
 { 
   int d, m=1;
   std::queue<record> * out;
   std::queue<record> list[10];
   out=l;
 
-  for (int j=0; j<t; j++) // разряды
+  for (int j=0; j<3; j++) // разряды
   {
       for (int i = 0; i <= 9; i++) // обнуляем листы
           list[i] = {};
     
     while (!out->empty())
     {
-        d = getdigit(out->front().b, j);
+        d = getdigit(out->front().year, j);
         list[d].push(out->front());
         out->pop();
     }
@@ -156,26 +144,14 @@ std::queue<record> radixa(std::queue<record> l) // сортировка по a
             list[i] = {};
         while (!out.empty())
         {
-            counter = 2;
-            for (int i = 29; i >= 0; i--) //идем справа налево в фио
-            {
-                d = (int)out.front().a[i]; //
+                d = (int)out.front().author[j]; //
                 if (d >= -128 && d <= -97) //если большая буква
-                {                   
-                    if (counter == j) // смотрим какая букву ищем на данный момент
-                    {
-                    //std::cout << "BREAK " << d+128 << " " ; //для профессионального дебага
-                    break;
-                    }
-                    else
-                    {
-                        counter--; // если изменился разряд
-                    }
-                }
-            }
-            
-            d += 128; //смещение
-            //std::cout << out.front().a << " " << j << " " << (int)out.front().a[j] << std::endl; // профессиональный дебаг
+                    d += 128;
+                else if (d >= -96 && d <= -81) //просто жесть
+                    d += 96;
+                else if (d >= -32 && d <= -17) // вот это кодировочка
+                    d += 48;
+
             list[d].push(out.front());
             out.pop();
         }
@@ -183,7 +159,6 @@ std::queue<record> radixa(std::queue<record> l) // сортировка по a
         {
             while (!list[i].empty())
             {
-                //std::cout << list[i].front().a << counter << std::endl; // еще дебаг
                 out.push(list[i].front());
                 list[i].pop();
             }
@@ -194,28 +169,32 @@ std::queue<record> radixa(std::queue<record> l) // сортировка по a
     return (out);
 }
 
-std::queue<record> radixab(std::queue<record> l)
+std::queue<record> radixba(std::queue<record> l)
 {
     std::queue<record> newqueue; // массив для вывода
     std::queue<record> tempqueue; // массив для сохранения подсписков
     while (!l.empty())
-        {
+    {
         record temp = l.front();
-        record tempnext;
+        int tempnextyear;
         l.pop();
         if (!l.empty())
         {
-            tempnext = l.front();
+            tempnextyear = l.front().year;
+        }
+        else
+        {
+            tempnextyear = 0;
         }
 
-        if (getcapitals(temp.a) == getcapitals(tempnext.a))
+        if (l.size() == 1 || (temp.year == tempnextyear))
         {
             tempqueue.push(temp);
         }
         else
         {
             tempqueue.push(temp);
-            tempqueue = *radixb(&tempqueue, maxdigitb(tempqueue));
+            tempqueue = radixa(tempqueue);
             while (!tempqueue.empty())
             {
                 newqueue.push(tempqueue.front());
@@ -227,16 +206,13 @@ std::queue<record> radixab(std::queue<record> l)
 }
 
 
-std::queue<record> binarysearch(std::queue<record> l, char* query1)
+std::queue<record> binarysearch(std::queue<record> l, int query)
 {
-    char* query = new char[50];
-    CharToOemA(query1, query);
     record* A = new record[4000];
     for (int i = 0; i < 3999; i++)
     {
         A[i] = l.front();
         l.pop();
-        //std::cout << getcapitalsreverse(A[i].a) << std::endl;
     }
 
     int L = 0;
@@ -245,7 +221,7 @@ std::queue<record> binarysearch(std::queue<record> l, char* query1)
     while (L < R)
     {
         m = (L + R) / 2;
-        if (getcapitalsreverse(A[m].a) < query)
+        if (A[m].year < query)
         {
             L = m + 1;
         }
@@ -254,14 +230,14 @@ std::queue<record> binarysearch(std::queue<record> l, char* query1)
             R = m;
         }
     }
-    if ((getcapitalsreverse(A[R].a).compare(query)==0))
+    if (A[R].year == query)
     {
         std::queue<record> newqueue;
         while (true)
         {
             if (R + 1 < 4000) // R = 3998
             {
-                if (getcapitalsreverse(A[R].a) == getcapitalsreverse(A[R + 1].a))
+                if (A[R].year == A[R+1].year)
                 {
                     newqueue.push(A[R]);
                     R++;
@@ -294,7 +270,7 @@ std::queue<record> binarysearch(std::queue<record> l, char* query1)
 int main()
 {
     FILE* fp;
-    fp = fopen("testBase3.dat", "rb");
+    fp = fopen("testBase1.dat", "rb");
     std::queue <record> myqueue;
     record* temp = new record;
     for (int i = 0; i < basesize; i++)
@@ -304,19 +280,59 @@ int main()
     }
 
     //printlist(myqueue); //работает
-    //printlist(*radixb(&myqueue, maxdigitb(myqueue))); работает
+    //printlist (*radixb(&myqueue)); //работает
     //printlist(radixa(myqueue));
+    //myqueue = radixa(myqueue);
     //printlist(myqueue);
-    myqueue = radixa(myqueue);
-    myqueue = radixab(myqueue);
+    //myqueue = radixab(myqueue);
     //printlist(radixab(myqueue));
+    //std::queue<record> result;
+    //result = binarysearch(myqueue, query);
+    //printlist(result);
 
-    std::queue<record> result;
-    char query[5] = "АВА";
-    result = binarysearch(myqueue, query);
-    printlist(result);
+    //myqueue = (*radixb(&myqueue));
+    //myqueue = radixba(myqueue);
+    //printlist(myqueue);
+    //printlist(binarysearch(myqueue, 1900));
 
-    
+    while (true)
+    {
+        int choice;
+        std::cout << "1. Print queue" << std::endl;
+        std::cout << "2. Sort by year and author" << std::endl;
+        std::cout << "3. Perform quick search" << std::endl;
+        std::cout << "0. Exit" << std::endl;
+        
+        std::cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+        {
+            printlist(myqueue);
+            break;
+        }
+        case 2:
+        {
+            printlist(radixba(*radixb(&myqueue)));
+            break;
+        }
+        case 3:
+        {
+            int query;
+            std::cout << "Enter your query (date)" << std::endl;
+            std::cin >> query;
+            printlist(binarysearch((radixba(*radixb(&myqueue))), query));
+            break;
+        }
+        case 0:
+            return 0;
+            break;
+        default:
+            std::cout << "Input error" << std::endl;
+            break;
+        }
+    }
 
 
     system("pause");
