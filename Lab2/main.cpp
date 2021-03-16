@@ -153,9 +153,9 @@ int sumpathlentree(Node* tree, int L)
         return 0;
 }
 
-int avgtreeheight(Node* tree)
+float avgtreeheight(Node* tree)
 {
-    return (sumpathlentree(tree, 1) / sizetree(tree));
+    return ((float)sumpathlentree(tree, 1) / sizetree(tree));
 }
 
 

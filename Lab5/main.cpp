@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <time.h>
+
 
 struct Node {
     int value;
@@ -18,10 +20,20 @@ int x;
 int c = 0;
 bool vr, hr;
 
+
+int sizetree(Node* tree)
+{
+    if (tree != NULL)
+        return(1 + sizetree(tree->left) + sizetree(tree->right));
+    else
+        return 0;
+}
+
 void createmass(int t, int n, int C[], int maxvalue)
 {
     for (int i = 0; i < n; i++)
     {
+        srand(time(0)+i);
         if (t == 1) C[i] = i+1;
         else if (t == 2) C[i] = n - i;
         else if (t == 3) C[i] = rand() % maxvalue + 1;
@@ -223,7 +235,7 @@ int main()
             break;
         case 8:
             p1 = nullptr;
-            p1 = BuildDOP_A2(p1, A,B, n, 0,n-1);
+            p1 = BuildDOP_A2(p1, A,B, n, 0,n-1); // должно быть лучше
             system("pause");
             break;
         case 9:

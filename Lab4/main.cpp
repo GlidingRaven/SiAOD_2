@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <time.h>
 
 struct Node {
     int value;
@@ -23,7 +24,7 @@ void createmass(int t, int n, int A[])
     {
         if (t == 1) A[i] = i;
         else if (t == 2) A[i] = n - i;
-        else if (t == 3) A[i] = rand() / 100;
+        if (t == 3) A[i] = rand() % 10000;
         std::cout << A[i] << ' ';
     }
     std::cout << std::endl;
@@ -68,9 +69,9 @@ int sumpathlentree(Node* tree, int L)
         return 0;
 }
 
-int avgtreeheight(Node* tree)
+float avgtreeheight(Node* tree)
 {
-    return (sumpathlentree(tree, 1) / sizetree(tree));
+    return ((float)sumpathlentree(tree, 1) / sizetree(tree));
 }
 
 
@@ -177,10 +178,10 @@ Node* AddToBtree(Node* p, int x)
                             vr = true;
                             hr = false;
                         }
-                    }
-                    else
-                    {
-                        hr = false;
+                        else
+                        {
+                            hr = false;
+                        }
                     }
                 }
             }
@@ -269,6 +270,7 @@ int main()
             system("pause");
             break;
         case 8:
+            std::cout << sizetree(p1) << std::endl;
             GoFromLeftToRight(p1);
             std::cout << std::endl;
             system("pause");

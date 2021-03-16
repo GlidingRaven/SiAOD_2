@@ -72,7 +72,7 @@ int main ()
 
     std::cout << "Tree size: " << sizetree(root) << std::endl;
     std::cout << "Tree height: "<< heighttree(root) << std::endl;
-    std::cout << "Tree average height: " << sumpathlentree(root, 1)/sizetree(root) << std::endl;
+    std::cout << "Tree average height: " << (float)sumpathlentree(root, 1) / sizetree(root) << std::endl; // косяк 3.5
     std::cout << "Tree checksum: "<< checksumtree(root) << std::endl;
     printtree(root);
     std::cout << std::endl;

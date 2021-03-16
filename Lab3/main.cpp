@@ -69,9 +69,9 @@ int sumpathlentree(Node* tree, int L)
         return 0;
 }
 
-int avgtreeheight(Node* tree)
+float avgtreeheight(Node* tree)
 {
-    return (sumpathlentree(tree, 1) / sizetree(tree));
+    return ((float)sumpathlentree(tree, 1) / sizetree(tree));
 }
 
 
@@ -343,7 +343,7 @@ int main()
             createmass(3, n, A);
             break;
         case 4:
-            p1 = BuildAVL(A, n); //TODO
+            p1 = BuildAVL(A, n);// LR RL косяк
             std::cout << "Turns count: " << turns << std::endl;
             system("pause");
             break;

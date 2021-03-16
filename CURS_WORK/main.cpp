@@ -6,6 +6,8 @@
 #include <string>
 #define basesize 4000
 
+int rost = 0;
+int turns = 0;
 
 struct record
 {
@@ -15,6 +17,14 @@ struct record
     short int year;
     short int num_of_page;
 
+};
+
+
+struct Node {
+    record value;
+    int balance;
+    struct Node* left;
+    struct Node* right;
 };
 
 void printlist(std::queue<record> myqueue)
@@ -266,6 +276,232 @@ std::queue<record> binarysearch(std::queue<record> l, int query)
     
 }
 
+Node* SearchInTree(Node* p, int x)
+{
+    while (p != nullptr)
+    {
+        if (p->value.num_of_page < x)
+        {
+            p = p->right;
+        }
+        else
+            if (p->value.num_of_page > x)
+            {
+                p = p->left;
+            }
+            else break;
+    }
+    return p;
+}
+
+
+
+static Node* LLTurn(Node* p)
+{
+    Node* q;
+    q = p->left;
+    q->balance = 0;
+    p->balance = 0;
+    p->left = q->right;
+    q->right = p;
+    return q;
+}
+
+static Node* LRTurn(Node* p)
+{
+    Node* q;
+    Node* r;
+    q = p->left;
+    r = q->right;
+    if (r->balance < 0)
+    {
+        p->balance = 1;
+    }
+    else
+    {
+        p->balance = 0;
+    }
+    if (r->balance > 0)
+    {
+        q->balance = -1;
+    }
+    else
+    {
+        q->balance = 0;
+    }
+    r->balance = 0;
+    p->left = r->right;
+    q->right = r->left;
+    r->left = q;
+    r->right = p;
+    return p;
+}
+
+
+static Node* RRTurn(Node* p)
+{
+    Node* q;
+    q = p->right;
+    q->balance = 0;
+    p->balance = 0;
+    p->right = q->left;
+    q->left = p;
+    return q;
+}
+
+static Node* RLTurn(Node* p)
+{
+    Node* q;
+    Node* r;
+    q = p->right;
+    r = q->left;
+    if (r->balance > 0)
+    {
+        p->balance = -1;
+    }
+    else
+    {
+        p->balance = 0;
+    }
+    if (r->balance < 0)
+    {
+        q->balance = 1;
+    }
+    else
+    {
+        q->balance = 0;
+    }
+    r->balance = 0;
+    p->right = r->left;
+    q->left = r->right;
+    r->left = p;
+    r->right = q;
+    return r;
+}
+
+
+
+
+static Node* AddToAVL(Node* p, record x)
+{
+    Node* p1;
+    if (p == nullptr)
+    {
+        p = new Node;
+        p->value = x;
+        p->left = nullptr;
+        p->right = nullptr;
+        p->balance = 0;
+        rost = true;
+        return p;
+    }
+    else
+    {
+        if (p->value.num_of_page > x.num_of_page)
+        {
+            p->left = AddToAVL(p->left, x);
+            if (rost)
+            {
+                if (p->balance > 0)
+                {
+                    p->balance = 0;
+                    rost = false;
+                }
+                else
+                {
+                    if (p->balance == 0)
+                    {
+                        p->balance = -1;
+                    }
+                    else
+                    {
+                        if (p->left->balance < 0)
+                        {
+                            p1 = p->left;
+                            if (p1->balance == -1)
+                            {
+                                p = LLTurn(p);
+                            }
+                            else
+                            {
+                                p = LRTurn(p);
+                            }
+                            turns++;
+                            rost = false;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            p->right = AddToAVL(p->right, x);
+            if (rost)
+            {
+                if (p->balance < 0)
+                {
+                    p->balance = 0;
+                    rost = false;
+                }
+                else
+                {
+                    if (p->balance == 0)
+                    {
+                        p->balance = 1;
+                    }
+                    else
+                    {
+                        if (p->right->balance > 0)
+                        {
+                            p1 = p->right;
+                            if (p1->balance == 1)
+                            {
+                                p = RRTurn(p);
+                            }
+                            else
+                            {
+                                p = RLTurn(p);
+                            }
+                            turns++;
+                            rost = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return p;
+}
+
+Node* BuildAVL(std::queue<record> l)
+{
+    int i;
+    turns = 0;
+    Node* Root = new Node;
+    Root->value = l.front();
+    Root->left = nullptr;
+    Root->right = nullptr;
+    Root->balance = 0;
+    l.pop();
+    for (i = 1; i < basesize; i++)
+    {
+        rost = false;
+        Root = AddToAVL(Root, l.front());
+        l.pop();
+    }
+    return Root;
+}
+
+void GoFromLeftToRight(Node* p)
+{
+    if (p != nullptr)
+    {
+        GoFromLeftToRight(p->left);
+        std::cout << p->value.author << " " << p->value.title << " " << p->value.publisher << " " << p->value.year << " " << p->value.num_of_page << std::endl;
+        GoFromLeftToRight(p->right);
+    }
+}
+
 
 int main()
 {
@@ -300,7 +536,8 @@ int main()
         int choice;
         std::cout << "1. Print queue" << std::endl;
         std::cout << "2. Sort by year and author" << std::endl;
-        std::cout << "3. Perform quick search" << std::endl;
+        std::cout << "3. Perform quick search" << std::endl; //не сохранять результаты
+        std::cout << "4. Build AVL tree and perform search" << std::endl; //вывод всех
         std::cout << "0. Exit" << std::endl;
         
         std::cin >> choice;
@@ -314,6 +551,7 @@ int main()
         }
         case 2:
         {
+            
             printlist(radixba(*radixb(&myqueue)));
             break;
         }
@@ -323,6 +561,23 @@ int main()
             std::cout << "Enter your query (date)" << std::endl;
             std::cin >> query;
             printlist(binarysearch((radixba(*radixb(&myqueue))), query));
+            break;
+        }
+        case 4:
+        {
+            Node* result;
+            result = BuildAVL(myqueue);
+            GoFromLeftToRight(result);
+            int query;
+            std::cout << std::endl << "================" << std::endl << " Enter query: ";
+            std::cin >> query;
+            std::cout << "Search result: " << std::endl;;
+            result = SearchInTree(result, query);
+            if (result != nullptr)
+                std::cout << result->value.author << " " << result->value.title << " " << result->value.publisher << " " << result->value.year << " " << result->value.num_of_page << std::endl;
+            else
+                std::cout << "Record not found" << std::endl;
+            
             break;
         }
         case 0:
