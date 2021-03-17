@@ -25,6 +25,7 @@ struct Node {
     int balance;
     struct Node* left;
     struct Node* right;
+
 };
 
 void printlist(std::queue<record> myqueue)
@@ -509,7 +510,7 @@ void GoFromLeftToRight(Node* p)
     }
 }
 
-
+Node* avltree;
 int main()
 {
     FILE* fp;
@@ -521,6 +522,7 @@ int main()
         int x = fread(temp, sizeof(record), 1, fp);
         myqueue.push(*temp);
     }
+    
 
     //printlist(myqueue); //работает
     //printlist (*radixb(&myqueue)); //работает
@@ -544,7 +546,8 @@ int main()
         std::cout << "1. Print queue" << std::endl;
         std::cout << "2. Sort by year and author" << std::endl;
         std::cout << "3. Perform quick search" << std::endl; //не сохранять результаты
-        std::cout << "4. Build AVL tree and perform search" << std::endl; //вывод всех
+        std::cout << "4. Build AVL tree" << std::endl; //вывод всех
+        std::cout << "5. Perform search" << std::endl; //вывод всех
         std::cout << "0. Exit" << std::endl;
         
         std::cin >> choice;
@@ -567,27 +570,29 @@ int main()
             int query;
             std::cout << "Enter your query (date)" << std::endl;
             std::cin >> query;
-            //printlist(binarysearch((radixba(*radixb(&myqueue))), query));
             binarysearch((radixba(*radixb(&myqueue))), query);
             break;
         }
         case 4:
+            avltree = BuildAVL(myqueue);
+            GoFromLeftToRight(avltree);
+            break;
+        case 5:
         {
-            Node* result;
-            result = BuildAVL(myqueue);
-            GoFromLeftToRight(result);
+            //GoFromLeftToRight(result);
             int query;
             std::cout << std::endl << "================" << std::endl << " Enter query: ";
             std::cin >> query;
             std::cout << "Search result: " << std::endl;;
-            result = SearchInTree(result, query);
+            Node result;
+            result = *SearchInTree(avltree, query);
             
 
-            if (result != nullptr)
-                while (!result->value.empty())
+            if (&result != nullptr)
+                while (!result.value.empty())
                 {
-                    std::cout << result->value.front().author << " " << result->value.front().title << " " << result->value.front().publisher << " " << result->value.front().year << " " << result->value.front().num_of_page << std::endl;
-                    result->value.pop();
+                    std::cout << result.value.front().author << " " << result.value.front().title << " " << result.value.front().publisher << " " << result.value.front().year << " " << result.value.front().num_of_page << std::endl;
+                    result.value.pop();
                 }
                 else
                 std::cout << "Record not found" << std::endl;
