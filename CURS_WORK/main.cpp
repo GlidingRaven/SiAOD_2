@@ -21,7 +21,7 @@ struct record
 
 
 struct Node {
-    record value;
+    std::queue<record> value;
     int balance;
     struct Node* left;
     struct Node* right;
@@ -250,17 +250,20 @@ std::queue<record> binarysearch(std::queue<record> l, int query)
                 if (A[R].year == A[R+1].year)
                 {
                     newqueue.push(A[R]);
+                    std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     R++;
                 }
                 else
                 {
                     newqueue.push(A[R]);
+                    std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     break;
                 }
             }
             else
             {
                 newqueue.push(A[R]);
+                std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                 break;
             }
 
@@ -280,12 +283,12 @@ Node* SearchInTree(Node* p, int x)
 {
     while (p != nullptr)
     {
-        if (p->value.num_of_page < x)
+        if (p->value.front().num_of_page < x)
         {
             p = p->right;
         }
         else
-            if (p->value.num_of_page > x)
+            if (p->value.front().num_of_page > x)
             {
                 p = p->left;
             }
@@ -388,7 +391,7 @@ static Node* AddToAVL(Node* p, record x)
     if (p == nullptr)
     {
         p = new Node;
-        p->value = x;
+        p->value.push(x);
         p->left = nullptr;
         p->right = nullptr;
         p->balance = 0;
@@ -397,7 +400,7 @@ static Node* AddToAVL(Node* p, record x)
     }
     else
     {
-        if (p->value.num_of_page > x.num_of_page)
+        if (p->value.front().num_of_page > x.num_of_page)
         {
             p->left = AddToAVL(p->left, x);
             if (rost)
@@ -433,7 +436,7 @@ static Node* AddToAVL(Node* p, record x)
                 }
             }
         }
-        else
+        else if (p->value.front().num_of_page < x.num_of_page)
         {
             p->right = AddToAVL(p->right, x);
             if (rost)
@@ -469,6 +472,10 @@ static Node* AddToAVL(Node* p, record x)
                 }
             }
         }
+        else
+        {
+            p->value.push(x);
+        }
     }
     return p;
 }
@@ -478,7 +485,7 @@ Node* BuildAVL(std::queue<record> l)
     int i;
     turns = 0;
     Node* Root = new Node;
-    Root->value = l.front();
+    Root->value.push(l.front());
     Root->left = nullptr;
     Root->right = nullptr;
     Root->balance = 0;
@@ -497,7 +504,7 @@ void GoFromLeftToRight(Node* p)
     if (p != nullptr)
     {
         GoFromLeftToRight(p->left);
-        std::cout << p->value.author << " " << p->value.title << " " << p->value.publisher << " " << p->value.year << " " << p->value.num_of_page << std::endl;
+        std::cout << p->value.front().author << " " << p->value.front().title << " " << p->value.front().publisher << " " << p->value.front().year << " " << p->value.front().num_of_page << std::endl;
         GoFromLeftToRight(p->right);
     }
 }
@@ -560,7 +567,8 @@ int main()
             int query;
             std::cout << "Enter your query (date)" << std::endl;
             std::cin >> query;
-            printlist(binarysearch((radixba(*radixb(&myqueue))), query));
+            //printlist(binarysearch((radixba(*radixb(&myqueue))), query));
+            binarysearch((radixba(*radixb(&myqueue))), query);
             break;
         }
         case 4:
@@ -573,9 +581,15 @@ int main()
             std::cin >> query;
             std::cout << "Search result: " << std::endl;;
             result = SearchInTree(result, query);
+            
+
             if (result != nullptr)
-                std::cout << result->value.author << " " << result->value.title << " " << result->value.publisher << " " << result->value.year << " " << result->value.num_of_page << std::endl;
-            else
+                while (!result->value.empty())
+                {
+                    std::cout << result->value.front().author << " " << result->value.front().title << " " << result->value.front().publisher << " " << result->value.front().year << " " << result->value.front().num_of_page << std::endl;
+                    result->value.pop();
+                }
+                else
                 std::cout << "Record not found" << std::endl;
             
             break;
