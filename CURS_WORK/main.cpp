@@ -217,7 +217,7 @@ std::queue<record> radixba(std::queue<record> l)
 }
 
 
-std::queue<record> binarysearch(std::queue<record> l, int query)
+void binarysearch(std::queue<record> l, int query)
 {
     record* A = new record[4000];
     for (int i = 0; i < 3999; i++)
@@ -243,38 +243,38 @@ std::queue<record> binarysearch(std::queue<record> l, int query)
     }
     if (A[R].year == query)
     {
-        std::queue<record> newqueue;
+        //std::queue<record> newqueue;
         while (true)
         {
             if (R + 1 < 4000) // R = 3998
             {
                 if (A[R].year == A[R+1].year)
                 {
-                    newqueue.push(A[R]);
+                    //newqueue.push(A[R]);
                     std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     R++;
                 }
                 else
                 {
-                    newqueue.push(A[R]);
+                    //newqueue.push(A[R]);
                     std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     break;
                 }
             }
             else
             {
-                newqueue.push(A[R]);
+                //newqueue.push(A[R]);
                 std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                 break;
             }
 
         }
-        return newqueue;
+        //return newqueue;
     }
     else
     {
-        std::queue<record> newqueue;
-        return newqueue;
+        //std::queue<record> newqueue;
+        //return newqueue;
     }
 
     
@@ -545,7 +545,7 @@ int main()
         int choice;
         std::cout << "1. Print queue" << std::endl;
         std::cout << "2. Sort by year and author" << std::endl;
-        std::cout << "3. Perform quick search" << std::endl; //не сохранять результаты
+        std::cout << "3. Perform quick search" << std::endl;
         std::cout << "4. Build AVL tree" << std::endl; //вывод всех
         std::cout << "5. Perform search" << std::endl; //вывод всех
         std::cout << "0. Exit" << std::endl;
@@ -581,7 +581,7 @@ int main()
         {
             //GoFromLeftToRight(result);
             int query;
-            std::cout << std::endl << "================" << std::endl << " Enter query: ";
+            std::cout << std::endl << "================" << std::endl << "Enter query: ";
             std::cin >> query;
             std::cout << "Search result: " << std::endl;;
             Node result;
