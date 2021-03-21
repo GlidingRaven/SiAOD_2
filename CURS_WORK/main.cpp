@@ -6,8 +6,7 @@
 #include <string>
 #define basesize 4000
 
-int rost = 0;
-int turns = 0;
+
 
 struct record
 {
@@ -41,7 +40,8 @@ void printlist(std::queue<record> myqueue)
     while (!temp.empty())
     {
         count++;
-        std::cout << temp.front().author << " " << temp.front().title << " " << temp.front().publisher << " " << temp.front().year << " " << temp.front().num_of_page <<std::endl;
+        std::cout << temp.front().author << " " << temp.front().title << " " << \
+            temp.front().publisher << " " << temp.front().year << " " << temp.front().num_of_page <<std::endl;
         while (count % 20 == 0)
         {
             std::cout << "Continue? (y/n)" << std::endl;
@@ -61,7 +61,7 @@ void printlist(std::queue<record> myqueue)
     }
 }
 
-int getdigit(int n, int x) //returns specific digit, counting from end and 0
+int getdigit(int n, int x)
 {
     for (int i = 0; i < x; i++)
     {
@@ -102,7 +102,7 @@ int maxdigitb(std::queue <record> myqueue)
 std::string firstthree(char *a)
 {
     std::string out = "";
-    for (int i = 0; i < 3; i++) //идем слева направо 3 символа в фио
+    for (int i = 0; i < 3; i++)
     {
         out += a[i];
     }
@@ -110,7 +110,7 @@ std::string firstthree(char *a)
     return out;
 }
 
-std::queue<record>* radixb(std::queue<record> *l) // сортировка по b
+std::queue<record>* radixb(std::queue<record> *l)
 { 
   int d, m=1;
   std::queue<record> * out;
@@ -119,7 +119,7 @@ std::queue<record>* radixb(std::queue<record> *l) // сортировка по b
 
   for (int j=0; j<3; j++) // разряды
   {
-      for (int i = 0; i <= 9; i++) // обнуляем листы
+      for (int i = 0; i <= 9; i++)
           list[i] = {};
     
     while (!out->empty())
@@ -142,25 +142,25 @@ std::queue<record>* radixb(std::queue<record> *l) // сортировка по b
 }
 
 
-std::queue<record> radixa(std::queue<record> l) // сортировка по a
+std::queue<record> radixa(std::queue<record> l)
 {
     int d, m = 1;
     std::queue<record> out;
     std::queue<record> list[33];
     out = l;
     int counter = 0;
-    for (int j = 2; j >= 0; j--) // разряды
+    for (int j = 2; j >= 0; j--)
     {
-        for (int i = 0; i <= 32; i++) // обнуляем листы
+        for (int i = 0; i <= 32; i++)
             list[i] = {};
         while (!out.empty())
         {
-                d = (int)out.front().author[j]; //
-                if (d >= -128 && d <= -97) //если большая буква
+                d = (int)out.front().author[j];
+                if (d >= -128 && d <= -97)
                     d += 128;
-                else if (d >= -96 && d <= -81) //просто жесть
+                else if (d >= -96 && d <= -81)
                     d += 96;
-                else if (d >= -32 && d <= -17) // вот это кодировочка
+                else if (d >= -32 && d <= -17)
                     d += 48;
 
             list[d].push(out.front());
@@ -182,8 +182,8 @@ std::queue<record> radixa(std::queue<record> l) // сортировка по a
 
 std::queue<record> radixba(std::queue<record> l)
 {
-    std::queue<record> newqueue; // массив для вывода
-    std::queue<record> tempqueue; // массив для сохранения подсписков
+    std::queue<record> newqueue;
+    std::queue<record> tempqueue;
     while (!l.empty())
     {
         record temp = l.front();
@@ -243,38 +243,28 @@ void binarysearch(std::queue<record> l, int query)
     }
     if (A[R].year == query)
     {
-        //std::queue<record> newqueue;
         while (true)
         {
-            if (R + 1 < 4000) // R = 3998
+            if (R + 1 < 4000)
             {
                 if (A[R].year == A[R+1].year)
                 {
-                    //newqueue.push(A[R]);
                     std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     R++;
                 }
                 else
                 {
-                    //newqueue.push(A[R]);
                     std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                     break;
                 }
             }
             else
             {
-                //newqueue.push(A[R]);
                 std::cout << A[R].author << " " << A[R].title << " " << A[R].publisher << " " << A[R].year << " " << A[R].num_of_page << std::endl;
                 break;
             }
 
         }
-        //return newqueue;
-    }
-    else
-    {
-        //std::queue<record> newqueue;
-        //return newqueue;
     }
 
     
@@ -384,10 +374,12 @@ static Node* RLTurn(Node* p)
 }
 
 
-
+int rost = 0;
+int turns = 0;
 
 static Node* AddToAVL(Node* p, record x)
 {
+
     Node* p1;
     if (p == nullptr)
     {
@@ -505,7 +497,8 @@ void GoFromLeftToRight(Node* p)
     if (p != nullptr)
     {
         GoFromLeftToRight(p->left);
-        std::cout << p->value.front().author << " " << p->value.front().title << " " << p->value.front().publisher << " " << p->value.front().year << " " << p->value.front().num_of_page << std::endl;
+        std::cout << p->value.front().author << " " << p->value.front().title << " " << p->value.front().publisher \
+            << " " << p->value.front().year << " " << p->value.front().num_of_page << std::endl;
         GoFromLeftToRight(p->right);
     }
 }
@@ -522,23 +515,6 @@ int main()
         int x = fread(temp, sizeof(record), 1, fp);
         myqueue.push(*temp);
     }
-    
-
-    //printlist(myqueue); //работает
-    //printlist (*radixb(&myqueue)); //работает
-    //printlist(radixa(myqueue));
-    //myqueue = radixa(myqueue);
-    //printlist(myqueue);
-    //myqueue = radixab(myqueue);
-    //printlist(radixab(myqueue));
-    //std::queue<record> result;
-    //result = binarysearch(myqueue, query);
-    //printlist(result);
-
-    //myqueue = (*radixb(&myqueue));
-    //myqueue = radixba(myqueue);
-    //printlist(myqueue);
-    //printlist(binarysearch(myqueue, 1900));
 
     while (true)
     {
@@ -546,8 +522,8 @@ int main()
         std::cout << "1. Print queue" << std::endl;
         std::cout << "2. Sort by year and author" << std::endl;
         std::cout << "3. Perform quick search" << std::endl;
-        std::cout << "4. Build AVL tree" << std::endl; //вывод всех
-        std::cout << "5. Perform search" << std::endl; //вывод всех
+        std::cout << "4. Build AVL tree" << std::endl;
+        std::cout << "5. Perform search" << std::endl;
         std::cout << "0. Exit" << std::endl;
         
         std::cin >> choice;
@@ -579,7 +555,6 @@ int main()
             break;
         case 5:
         {
-            //GoFromLeftToRight(result);
             int query;
             std::cout << std::endl << "================" << std::endl << "Enter query: ";
             std::cin >> query;
@@ -591,7 +566,8 @@ int main()
             if (&result != nullptr)
                 while (!result.value.empty())
                 {
-                    std::cout << result.value.front().author << " " << result.value.front().title << " " << result.value.front().publisher << " " << result.value.front().year << " " << result.value.front().num_of_page << std::endl;
+                    std::cout << result.value.front().author << " " << result.value.front().title << " " << \
+                        result.value.front().publisher << " " << result.value.front().year << " " << result.value.front().num_of_page << std::endl;
                     result.value.pop();
                 }
                 else

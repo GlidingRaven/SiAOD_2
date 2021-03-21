@@ -24,7 +24,7 @@ void createmass(int t, int n, int A[])
     {
         if (t == 1) A[i] = i;
         else if (t == 2) A[i] = n - i;
-        if (t == 3) A[i] = rand() % 10000;
+        if (t == 3) A[i] = rand() % 3000;
         std::cout << A[i] << ' ';
     }
     std::cout << std::endl;
